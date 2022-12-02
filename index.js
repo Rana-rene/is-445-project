@@ -1,11 +1,10 @@
 const express = require("express");
 const path = require("path");
 const { Pool } = require("pg");
-require('dotenv').config();
+// require('dotenv').config();
 
 // Creating the Express server
 const app = express();
-
 
 // Server configuration
 app.set("view engine", "ejs");
@@ -13,22 +12,21 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 
-
 // Add database package and connection string (can remove ssl)
 const pool = new Pool({
-    connectionString: process.env.CRUNCHY_DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+  user: "xldhavxk",
+  host: "babar.db.elephantsql.com",
+  database: "xldhavxk",
+  password: "Q4-_EX_sx-Qq4bo1Il-4wS0wEKpsUen2",
+  port: 5432
 });
+console.log("Successful connection to the database");
 
 
 // Starting the server
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server started (http://localhost:3000/) !");
 });
-
-
 
 
 // GET /
@@ -62,10 +60,12 @@ app.get("/books", (req, res) => {
     });
 });
 
-// GET /create
+
 app.get("/create", (req, res) => {
     res.render("create", { model: {} });
 });
+
+
 
 // POST /create
 app.post("/create", (req, res) => {
@@ -129,3 +129,6 @@ app.post("/delete/:id", (req, res) => {
       res.redirect("/books");
     });
   });
+
+
+
