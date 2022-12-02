@@ -24,9 +24,10 @@ const pool = new Pool({
 
 
 // Starting the server
-app.listen(3000, () => {
-    console.log("Server started (http://localhost:3000/) !");
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server started (http://localhost:3000/) !");
 });
+
 
 
 
@@ -70,7 +71,6 @@ app.get("/create", (req, res) => {
 app.post("/create", (req, res) => {
     const sql = "INSERT INTO Books (Title, Author, Comments) VALUES ($1, $2, $3)";
     const book = [req.body.title, req.body.author, req.body.comments];
-    console.log(book);
     pool.query(sql, book, (err, result) => {
       if (err) {
         return console.error(err.message);
