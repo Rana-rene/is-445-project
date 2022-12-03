@@ -1,7 +1,8 @@
 const express = require("express");
 const path = require("path");
-const { Pool } = require("pg");
-// require('dotenv').config();
+const multer = require("multer");
+const upload = multer();
+const finder = require("./finder.js");
 
 // Creating the Express server
 const app = express();
@@ -12,20 +13,19 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 
-// Add database package and connection string (can remove ssl)
-const pool = new Pool({
-  user: "xldhavxk",
-  host: "babar.db.elephantsql.com",
-  database: "xldhavxk",
-  password: "Q4-_EX_sx-Qq4bo1Il-4wS0wEKpsUen2",
-  port: 5432
-});
-console.log("Successful connection to the database");
-
 
 // Starting the server
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server started (http://localhost:3000/) !");
+});
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
 
 
@@ -35,10 +35,53 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
-// GET /about
-app.get("/about", (req, res) => {
-    res.render("about");
+
+app.get("/manage", async (req, res) => {
+  // Omitted validation check
+  const totRecs = await finder.getTotalRecords();
+  //Create an empty product object (To populate form with values)
+  const cust = {
+      customer_id: "",
+      first_name: "",
+      last_name: "",
+      states: "",
+      sales_ytd: "",
+      previous_years_sales: ""
+  };
+  res.render("manage", {
+      type: "get",
+      totRecs: totRecs.totRecords,
+      cust: cust
+  });
 });
+
+app.post("/manage", async (req, res) => {
+  const totRecs = await finder.getTotalRecords();
+
+  finder.findCustomers(req.body)
+      .then(result => {
+          res.render("manage", {
+              type: "post",
+              totRecs: totRecs.totRecords,
+              result: result,
+              cust: req.body
+          })
+      })
+      .catch(err => {
+          res.render("manage", {
+              type: "post",
+              totRecs: totRecs.totRecords,
+              result: `Unexpected Error: ${err.message}`,
+              cust: req.body
+          });
+      });
+});
+
+
+
+
+
+
 
 // GET /data
 app.get("/data", (req, res) => {
