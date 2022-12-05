@@ -14,6 +14,19 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 
 
+// Add packages
+require("dotenv").config();
+// Add database package and connection string (can remove ssl)
+const { Pool } = require("pg");
+
+const pool = new Pool({
+    user: "xldhavxk",
+    host: "babar.db.elephantsql.com",
+    database: "xldhavxk",
+    password: "Q4-_EX_sx-Qq4bo1Il-4wS0wEKpsUen2",
+    port: 5432
+  });
+
 // Starting the server
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server started (http://localhost:3000/) !");
@@ -77,33 +90,6 @@ app.post("/manage", async (req, res) => {
       });
 });
 
-
-
-
-
-
-
-// GET /data
-app.get("/data", (req, res) => {
-    const test = {
-        titre: "Test",
-        items: ["one", "two", "three"]
-    };
-    res.render("data", { model: test });
-});
-
-
-app.get("/books", (req, res) => {
-    const sql = "SELECT * FROM Books ORDER BY Title"
-    pool.query(sql, [], (err, result) => {
-        if (err) {
-            return console.error(err.message);
-        }
-        res.render("books", { model: result.rows });
-    });
-});
-
-
 app.get("/create", (req, res) => {
     res.render("create", { model: {} });
 });
@@ -112,20 +98,20 @@ app.get("/create", (req, res) => {
 
 // POST /create
 app.post("/create", (req, res) => {
-    const sql = "INSERT INTO Books (Title, Author, Comments) VALUES ($1, $2, $3)";
-    const book = [req.body.title, req.body.author, req.body.comments];
-    pool.query(sql, book, (err, result) => {
+    const sql = "INSERT INTO CUSTOMERS (customer_id, first_name, last_name, states, sales_ytd, previous_years_sales) VALUES ($1, INITCAP($2), INITCAP($3), UPPER($4), $5, $6)";
+    const create_customer= [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.states, req.body.sales_ytd, req.body.previous_years_sales];
+    pool.query(sql, create_customer, (err, result) => {
       if (err) {
         return console.error(err.message);
       }
-      res.redirect("/books");
+      res.redirect("/manage");
     });
   });
 
 // GET /edit/5
 app.get("/edit/:id", (req, res) => {
     const id = req.params.id;
-    const sql = "SELECT * FROM Books WHERE Book_ID = $1";
+    const sql = "SELECT * FROM CUSTOMERS WHERE customer_id = $1";
     pool.query(sql, [id], (err, result) => {
       if (err) {
         return console.error(err.message);
@@ -137,13 +123,13 @@ app.get("/edit/:id", (req, res) => {
 // POST /edit/5
 app.post("/edit/:id", (req, res) => {
     const id = req.params.id;
-    const book = [req.body.title, req.body.author, req.body.comments, id];
-    const sql = "UPDATE Books SET Title = $1, Author = $2, Comments = $3 WHERE (Book_ID = $4)";
-    pool.query(sql, book, (err, result) => {
+    const customer= [req.body.first_name, req.body.last_name, req.body.states, req.body.sales_ytd, req.body.previous_years_sales, id];
+    const sql = "UPDATE CUSTOMERS SET first_name = INITCAP($1), last_name = INITCAP($2), states = UPPER($3), sales_ytd = $4, previous_years_sales = $5 WHERE (customer_id = $6)";
+    pool.query(sql, customer, (err, result) => {
       if (err) {
         return console.error(err.message);
       }
-      res.redirect("/books");
+      res.redirect("/manage");
     });
   });
   
@@ -151,7 +137,7 @@ app.post("/edit/:id", (req, res) => {
 // GET /delete/5
 app.get("/delete/:id", (req, res) => {
     const id = req.params.id;
-    const sql = "SELECT * FROM Books WHERE Book_ID = $1";
+    const sql = "SELECT * FROM CUSTOMERS WHERE customer_id = $1";
     pool.query(sql, [id], (err, result) => {
       if (err) {
         return console.error(err.message);
@@ -164,14 +150,69 @@ app.get("/delete/:id", (req, res) => {
 // POST /delete/5
 app.post("/delete/:id", (req, res) => {
     const id = req.params.id;
-    const sql = "DELETE FROM Books WHERE Book_ID = $1";
+    const sql = "DELETE FROM CUSTOMERS WHERE customer_id = $1";
     pool.query(sql, [id], (err, result) => {
       if (err) {
         return console.error(err.message);
       }
-      res.redirect("/books");
+      res.redirect("/manage");
     });
   });
 
 
+  app.get("/newCust", async (req, res) => {
+    res.render("newCust", {
+      model: {}, 
+      type: "get"
+     });
+});
 
+// POST /newCust
+app.post("/newCust", async (req, res) => {
+  const sql = "INSERT INTO CUSTOMERS (customer_id, first_name, last_name, states, sales_ytd, previous_years_sales) VALUES ($1, INITCAP($2), INITCAP($3), UPPER($4), $5, $6)";
+  const create_customer= [req.body.customer_id, req.body.first_name, req.body.last_name, req.body.states, req.body.sales_ytd, req.body.previous_years_sales];
+  pool.query(sql, create_customer, (err, result) => {
+    if (err) {
+      // return console.error(err.message);
+      res.render("newCust", {
+        model: {},
+        type: "post",
+        err: err.message});
+    } else{
+    res.render("newCust", {
+      model: {},
+      type: "post",
+      err: 'good'
+    });
+    };
+  });
+});
+
+// Strips a String Number that contains (, and $), then converts it into a Number 
+function stringer(str) {
+  return parseFloat(str.replace(/\$/g, '').replace(/,/g, ''));
+}
+
+app.get("/export", (req, res) => {
+  var message = "";
+  res.render("export",{ message: message });
+ });
+
+app.post("/export", (req, res) => {
+  const sql = "SELECT * FROM CUSTOMERS ORDER BY customer_id";
+  pool.query(sql, [], (err, result) => {
+      var message = "";
+      if (err) {
+          message = `Error - ${err.message}`;
+          res.render("output", { message: message })
+      } else {
+          var output = (`Customer ID, First Name, Last Name, State, Sales YTD, Prev Year sales\r\n`);
+          result.rows.forEach(customer => {
+              output += `${customer.customer_id},${customer.first_name},${customer.last_name},${customer.states},"\$"+ ${stringer(customer.sales_ytd)},"\$"+ ${stringer(customer.previous_years_sales)}\r\n`;
+          });
+          res.header("Content-Type", "text/csv");
+          res.attachment("export.csv");
+          return res.send(output);
+      };
+  });
+});

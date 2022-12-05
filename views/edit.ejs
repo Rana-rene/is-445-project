@@ -2,16 +2,16 @@
 
 <h1>Update a record</h1>
 
-<form action="/edit/<%= model.book_id %>" method="post">
+<form action="/edit/<%= model.customer_id %>" method="post">
   <div class="form-horizontal">
 
-    <%- include("_editor") -%>
+    <%- include("_editor2") -%>
 
     <div class="form-group row">
       <label class="col-form-label col-sm-2"></label>
       <div class="col-sm-10">
         <input type="submit" value="Update" class="btn btn-default btn-warning" />
-        <a class="btn btn-outline-dark cancel" href="/books">Cancel</a>
+        <a class="btn btn-outline-dark cancel" href="/manage">Cancel</a>
       </div>
     </div>
   </div>
