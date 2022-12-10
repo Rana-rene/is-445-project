@@ -17,4 +17,25 @@
   </div>
 </form>
 
+
+
+<% if (type==="post" ) { %> 
+
+  <% if (err== "good" ) { %> 
+      <h1>Customer Deleted Successfully!</h1>
+  
+      <% } else { %>
+
+          <h1>Error Deleting Customer!</h1>
+
+          <h6>
+             Error: <%= err %>
+          </h6>
+              <% } %>
+
+              <% } %> 
+
+                  <%- include("_footer") -%>
+
+
 <%- include("_footer") -%>

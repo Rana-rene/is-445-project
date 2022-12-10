@@ -40,9 +40,12 @@ const insertCustomer = (customers) => {
         params = Object.values(customers);
     };
 
-    const sql = `INSERT INTO customers (customers_id, first_name, last_name, states, sales_ytd, previous_years_sales)
-                 VALUES ($1, $2, $3, $4, $5, $6)`;
+    // const sql = `INSERT INTO customers (customers_id, first_name, last_name, states, sales_ytd, previous_years_sales)
+    //              VALUES ($1, $2, $3, $4, $5, $6)`;
 
+    const sql = `INSERT INTO CUSTOMERS (customer_id, first_name, last_name, states, sales_ytd, previous_years_sales)
+                 VALUES ($1, INITCAP($2), INITCAP($3), UPPER($4), $5, $6)`;
+                 
     return pool.query(sql, params)
         .then(res => {
             return {

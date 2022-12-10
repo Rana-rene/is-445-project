@@ -17,4 +17,23 @@
   </div>
 </form>
 
+<% if (type==="post" ) { %> 
+
+  <% if (err== "good" ) { %> 
+      <h1>Customer Updated Successfully!</h1>
+  
+      <% } else { %>
+
+          <h1>Error Updating Customer!</h1>
+
+          <h6>
+             Error: <%= err %>
+          </h6>
+              <% } %>
+
+              <% } %> 
+
+                  <%- include("_footer") -%>
+
+
 <%- include("_footer") -%>

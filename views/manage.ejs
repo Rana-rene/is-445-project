@@ -4,6 +4,18 @@
 
     <h4>Total number of records in the database: <%= totRecs %>
     </h4>
+    <script>
+        function customReset()
+        {
+            document.getElementById("customer_id").value= "";
+            document.getElementById("first_name").value= "";
+            document.getElementById("last_name").value= "";
+            document.getElementById("states").value= "";
+            document.getElementById("sales_ytd").value= "";
+            document.getElementById("sales_ytd").value= "";
+            document.getElementById("previous_years_sales").value= "";
+        }
+        </script>
 
     <!-- Not using bootstrap, just a simple form that you may enhance -->
     <form action="/manage" method="POST" id="form">
@@ -15,17 +27,17 @@
             </tr>
             <tr>
                 <td><label for="first_name">First Name</label>:</td>
-                <td><input type="text" name="first_name" id="first_name" value="<%= cust.first_name %>" /></td>
+                <td><input type="text" name="first_name" id="first_name" oninput="this.value = this.value.replace(/[^A-z, ]/, '')" value="<%= cust.first_name %>" /></td>
                 <td>(starts with)</td>
             </tr>
             <tr>
                 <td><label for="last_name">Last Name</label>:</td>
-                <td><input type="text" name="last_name" id="last_name" value="<%= cust.last_name %>" /></td>
+                <td><input type="text" name="last_name" id="last_name" oninput="this.value = this.value.replace(/[^A-z, ]/, '')" value="<%= cust.last_name %>" /></td>
                 <td>(starts with)</td>
             </tr>
             <tr>
                 <td><label for="states">State</label>:</td>
-                <td><input type="text" name="states" id="states" maxlength="2" value="<%= cust.states %>" /></td>
+                <td><input type="text" name="states" id="states" maxlength="2" oninput="this.value = this.value.replace(/[^A-z, ]/, '')" value="<%= cust.states %>" /></td>
                 <td>(equal)</td>
             </tr>
             <tr>
@@ -42,7 +54,7 @@
             <tr>
                 <td span="3">
                     <input type="submit" value="Find" />
-                    <input type="reset" value="Reset" id="reset" />
+                    <input type="button" value="Reset" id="reset" onclick="customReset();"/>
                 </td>
             </tr>
         </table>

@@ -10,7 +10,7 @@
   <div class="form-group row">
     <label class="col-form-label col-sm-2" for="first_name">First Name</label>
     <div class="col-sm-7">
-      <input class="form-control" name="first_name"  type= "text" oninput="this.value = this.value.replace(/[^a-z, ]/, '')" value="<%= model.first_name %>" required="required"/>
+      <input class="form-control" name="first_name"  type= "text" oninput="this.value = this.value.replace(/[^A-z, ]/, '')" value="<%= model.first_name %>" required="required"/>
     </div>
     <label>(Required)</label>
   </div>
@@ -18,7 +18,7 @@
   <div class="form-group row">
     <label class="col-form-label col-sm-2" for="last_name">Last Name</label>
     <div class="col-sm-7">
-      <input class="form-control" name="last_name" oninput="this.value = this.value.replace(/[^a-z, ]/, '')" value="<%= model.last_name %>" required="required"/>
+      <input class="form-control" name="last_name" oninput="this.value = this.value.replace(/[^A-z, ]/, '')" value="<%= model.last_name %>" required="required"/>
     </div>
     <label>(Required)</label>
   </div>
@@ -26,7 +26,7 @@
   <div class="form-group row">
     <label class="col-form-label col-sm-2" for="states">State</label>
     <div class="col-sm-7">
-      <input class="form-control" name="states" list="states" oninput="this.value = this.value.replace(/[^a-z, ]/, '')" maxlength="2" value="<%= model.states %>" />
+      <input class="form-control" name="states" list="states" oninput="this.value = this.value.replace(/[^A-z, ]/, '')" maxlength="2" value="<%= model.states %>" />
       <%- include("states") -%>
     </div>
   </div>
